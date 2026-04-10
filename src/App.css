@@ -1,0 +1,699 @@
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  background: #e8e8ed;
+  color: #1d1d1f;
+  overflow: hidden;
+  height: 100vh;
+}
+.app { display: flex; height: 100vh; }
+
+/* ============================================
+   EDITOR PANEL
+   ============================================ */
+.editor {
+  width: 380px;
+  min-width: 380px;
+  background: #f5f5f7;
+  border-right: 1px solid #e5e5ea;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.editor-header {
+  padding: 20px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: #f5f5f7;
+  z-index: 10;
+  border-bottom: 1px solid #e5e5ea;
+}
+.editor-title { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.lang-toggle { display: flex; background: #e5e5ea; border-radius: 8px; overflow: hidden; }
+.lang-btn {
+  padding: 5px 12px; font-size: 13px; font-weight: 600;
+  border: none; background: none; cursor: pointer; color: #86868b; transition: all 0.2s;
+}
+.lang-btn.active {
+  background: white; color: #1d1d1f; border-radius: 7px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.editor-body { padding: 12px 16px 100px; flex: 1; }
+
+/* Sections */
+.section {
+  background: #fff; border-radius: 12px; margin-bottom: 10px;
+  overflow: hidden; box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+}
+.section summary {
+  padding: 14px 16px; font-size: 14px; font-weight: 600;
+  cursor: pointer; list-style: none; display: flex;
+  align-items: center; justify-content: space-between; user-select: none;
+}
+.section summary::-webkit-details-marker { display: none; }
+.section summary::after {
+  content: ''; width: 8px; height: 8px;
+  border-right: 2px solid #86868b; border-bottom: 2px solid #86868b;
+  transform: rotate(-45deg); transition: transform 0.2s;
+}
+.section[open] summary::after { transform: rotate(45deg); }
+.section-body { padding: 0 16px 14px; }
+
+/* Form */
+.form-group { margin-bottom: 12px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: #86868b; margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.form-input, .form-select {
+  width: 100%; padding: 9px 12px; border: 1px solid #e5e5ea;
+  border-radius: 10px; font-size: 14px; font-family: inherit;
+  outline: none; background: #fff; color: #1d1d1f;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus { border-color: #007aff; }
+
+/* Toggle */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+.toggle-label { font-size: 14px; font-weight: 500; }
+.toggle {
+  -webkit-appearance: none; appearance: none; width: 51px; height: 31px;
+  background: #e9e9eb; border-radius: 16px; cursor: pointer;
+  transition: background 0.3s; position: relative; flex-shrink: 0;
+}
+.toggle:checked { background: #34c759; }
+.toggle::before {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 27px; height: 27px; background: white; border-radius: 50%;
+  transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.toggle:checked::before { transform: translateX(20px); }
+
+/* Range */
+.range-row { display: flex; align-items: center; gap: 10px; }
+.form-range {
+  -webkit-appearance: none; appearance: none; flex: 1;
+  height: 4px; background: #e5e5ea; border-radius: 2px; outline: none;
+}
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px;
+  background: white; border-radius: 50%; cursor: pointer;
+  box-shadow: 0 0.5px 4px rgba(0,0,0,0.2);
+}
+.range-value { font-size: 14px; font-weight: 600; min-width: 36px; text-align: right; }
+
+/* Avatar */
+.avatar-upload { display: flex; align-items: center; gap: 12px; }
+.avatar-preview {
+  width: 48px; height: 48px; border-radius: 50%; background: #e5e5ea;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+}
+.avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-btns { display: flex; gap: 6px; }
+.btn {
+  padding: 7px 14px; border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-secondary { background: #e5e5ea; color: #1d1d1f; }
+.btn-danger-sm { background: none; color: #ff3b30; padding: 4px 8px; font-size: 12px; border: none; cursor: pointer; }
+
+/* Message cards */
+.msg-card {
+  background: #f9f9f9; border: 1px solid #ececec; border-radius: 10px;
+  padding: 8px 10px; margin-bottom: 6px;
+  display: flex; align-items: flex-start; gap: 8px; cursor: grab;
+}
+.msg-card:active { cursor: grabbing; }
+.msg-card .drag-handle { color: #c7c7cc; cursor: grab; flex-shrink: 0; font-size: 14px; padding-top: 6px; }
+.msg-card .sender-select {
+  padding: 4px 6px; border: 1px solid #ddd; border-radius: 6px;
+  font-size: 12px; font-weight: 600; background: white;
+  flex-shrink: 0; font-family: inherit;
+}
+.msg-card .msg-text-input {
+  flex: 1; min-width: 0; padding: 5px 8px; border: 1px solid #e5e5ea;
+  border-radius: 8px; font-size: 13px; font-family: inherit;
+  outline: none; resize: vertical; min-height: 32px; line-height: 1.3;
+}
+.msg-card .msg-text-input:focus { border-color: #007aff; }
+.msg-card .delete-btn {
+  background: none; border: none; color: #ff3b30; cursor: pointer;
+  padding: 4px; font-size: 16px; flex-shrink: 0; opacity: 0.6;
+}
+.msg-card .delete-btn:hover { opacity: 1; }
+.msg-card.time-card { background: #fff8e6; border-color: #f0e4c0; }
+.msg-card .time-icon { flex-shrink: 0; font-size: 14px; padding-top: 4px; }
+
+.add-btns { display: flex; gap: 6px; margin-top: 8px; }
+.btn-add {
+  flex: 1; padding: 9px; background: white;
+  border: 1.5px dashed #d1d1d6; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: #007aff;
+  cursor: pointer; font-family: inherit;
+}
+.btn-add:hover { background: #f0f5ff; border-color: #007aff; }
+
+/* Save bar */
+.save-bar {
+  position: sticky; bottom: 0; padding: 12px 16px;
+  background: #f5f5f7; border-top: 1px solid #e5e5ea;
+}
+.save-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-import {
+  flex: 0 0 124px;
+  padding: 14px 12px;
+  background: white;
+  color: #1d1d1f;
+  border: 1px solid #d6d6db;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+.btn-import:hover { background: #fafafa; }
+.btn-import:active { transform: scale(0.98); }
+.btn-save {
+  flex: 1; padding: 14px; background: #1d1d1f; color: white;
+  border: none; border-radius: 14px; font-size: 15px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-save:hover { opacity: 0.85; }
+.btn-save:active { transform: scale(0.98); }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 29, 31, 0.36);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+.import-modal {
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  padding: 18px;
+}
+.import-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.import-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f2f7;
+  color: #3a3a3c;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.import-modal-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6e6e73;
+}
+.import-textarea {
+  width: 100%;
+  min-height: 280px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #d6d6db;
+  border-radius: 16px;
+  font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+  outline: none;
+  background: #fbfbfd;
+  color: #1d1d1f;
+}
+.import-textarea:focus {
+  border-color: #007aff;
+  background: #fff;
+}
+.import-error {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #d93025;
+}
+.import-modal-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.modal-btn {
+  min-width: 120px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+.modal-btn-secondary {
+  background: #f2f2f7;
+  border: 1px solid #e2e2e8;
+  color: #1d1d1f;
+}
+.modal-btn-primary {
+  background: #1d1d1f;
+  border: none;
+  color: white;
+}
+
+/* ============================================
+   PREVIEW PANEL
+   ============================================ */
+.preview {
+  flex: 1; display: flex; align-items: center;
+  justify-content: center; background: #e8e8ed; overflow: hidden;
+}
+
+/* ============================================
+   iPHONE FRAME
+   ============================================ */
+.iphone-frame {
+  width: 393px; height: 852px; position: relative;
+  transform-origin: center center;
+}
+.iphone-bezel {
+  position: absolute; inset: 0; background: #1a1a1e;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 20px 60px rgba(0,0,0,0.35),
+    0 4px 20px rgba(0,0,0,0.15),
+    inset 0 0 0 1.5px #2a2a2e;
+}
+.iphone-screen {
+  position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border-radius: 49px; overflow: hidden; background: #fff;
+  display: flex; flex-direction: column;
+  --glass-surface:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.98) 0%,
+      rgba(255,255,255,0.9) 38%,
+      rgba(244,247,252,0.86) 100%),
+    linear-gradient(135deg,
+      rgba(255,255,255,0.62) 0%,
+      rgba(255,255,255,0.08) 100%);
+  --glass-border: rgba(255,255,255,0.92);
+  --glass-shadow:
+    0 10px 28px rgba(17, 24, 39, 0.08),
+    0 2px 8px rgba(17, 24, 39, 0.05),
+    inset 0 1px 0 rgba(255,255,255,0.96),
+    inset 0 -1px 0 rgba(255,255,255,0.42);
+}
+.iphone-screen.dark {
+  background: #000;
+  --glass-surface:
+    linear-gradient(180deg,
+      rgba(90,96,108,0.94) 0%,
+      rgba(58,62,71,0.92) 42%,
+      rgba(36,39,46,0.94) 100%),
+    linear-gradient(135deg,
+      rgba(255,255,255,0.14) 0%,
+      rgba(255,255,255,0.02) 100%);
+  --glass-border: rgba(255,255,255,0.14);
+  --glass-shadow:
+    0 12px 30px rgba(0,0,0,0.34),
+    0 2px 8px rgba(0,0,0,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -1px 0 rgba(0,0,0,0.34);
+}
+.dynamic-island {
+  position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+  width: 126px; height: 37px; background: #000;
+  border-radius: 22px; z-index: 50;
+}
+
+/* ============================================
+   STATUS BAR
+   ============================================ */
+.status-bar {
+  height: 54px; padding: 16px 26px 0 42px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-shrink: 0; position: absolute; top: 0; left: 0; right: 0;
+  z-index: 45; color: #000;
+}
+.iphone-screen.dark .status-bar { color: #fff; }
+.sb-left { display: flex; align-items: center; gap: 3px; }
+.sb-time { font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }
+.sb-right { display: flex; align-items: center; gap: 5px; }
+.sb-network { font-size: 12px; font-weight: 500; }
+.sb-battery-pct { font-size: 12px; font-weight: 600; }
+
+/* ============================================
+   NAV HEADER  (iOS 26 Liquid Glass)
+   ============================================ */
+.nav-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 35;
+  padding: 54px 16px 28px;
+  background: linear-gradient(to bottom,
+    rgb(255,255,255) 0%,
+    rgb(255,255,255) 35%,
+    rgba(255,255,255,0.92) 58%,
+    rgba(255,255,255,0.7) 80%,
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+.nav-header > * { pointer-events: auto; }
+.iphone-screen.dark .nav-header {
+  background: linear-gradient(to bottom,
+    rgb(0,0,0) 0%,
+    rgb(0,0,0) 35%,
+    rgba(0,0,0,0.92) 58%,
+    rgba(0,0,0,0.7) 80%,
+    rgba(0,0,0,0) 100%);
+}
+
+/* Back + Video glass circle buttons */
+.nav-side-icons {
+  display: flex; justify-content: space-between;
+  position: absolute; top: 58px; left: 16px; right: 16px;
+  pointer-events: none; z-index: 2;
+}
+.nav-side-icons > * { pointer-events: auto; }
+
+.nav-glass-btn {
+  width: 45px; height: 45px; border-radius: 22.5px;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+}
+
+/* Centered profile area */
+.nav-profile-center {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+  padding-top: 0;
+  position: relative; z-index: 1;
+}
+
+/* Glass circle behind avatar */
+.nav-avatar-glass {
+  width: 65px; height: 65px; border-radius: 50%;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3px; overflow: hidden;
+}
+
+.nav-avatar-lg {
+  width: 58px; height: 58px; border-radius: 50%;
+  background: #e5e5ea; display: flex; align-items: center;
+  justify-content: center; overflow: hidden;
+}
+.iphone-screen.dark .nav-avatar-lg { background: #3a3a3c; }
+.nav-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Name pill */
+.nav-name-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 4px;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.99) 0%,
+      rgba(249,250,253,0.97) 100%);
+  border: 1px solid rgba(255,255,255,0.96);
+  box-shadow:
+    0 8px 24px rgba(17, 24, 39, 0.07),
+    0 2px 6px rgba(17, 24, 39, 0.04),
+    inset 0 1px 0 rgba(255,255,255,0.98),
+    inset 0 -1px 0 rgba(227,232,241,0.7);
+  border-radius: 18px;
+  padding: 2px 14px 1px;
+  min-width: 86px; min-height: 31px;
+}
+.iphone-screen.dark .nav-name-pill {
+  background:
+    linear-gradient(180deg,
+      rgba(80,84,94,0.95) 0%,
+      rgba(56,60,69,0.94) 100%);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.28),
+    0 2px 8px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(0,0,0,0.25);
+}
+.nav-contact-name {
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 17px; font-weight: 600; color: #000;
+  line-height: 1.15;
+  letter-spacing: -0.45px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 200px;
+}
+.iphone-screen.dark .nav-contact-name { color: #fff; }
+.nav-contact-chevron {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 8px; height: 13px;
+  margin-left: 1px; flex-shrink: 0;
+}
+
+/* ============================================
+   CHAT AREA
+   ============================================ */
+.chat-area {
+  flex: 1; overflow-y: auto; padding: 110px 10px 8px;
+  display: flex; flex-direction: column;
+}
+.chat-area::-webkit-scrollbar { display: none; }
+.msg-row { display: flex; max-width: 100%; padding: 0 6px; }
+.msg-row.me { justify-content: flex-end; }
+.msg-row.them { justify-content: flex-start; }
+.msg-row.gap-sm { margin-top: 2px; }
+.msg-row.gap-lg { margin-top: 8px; }
+
+/* Bubbles (iOS 26) */
+.bubble {
+  max-width: 72%; padding: 8px 12px;
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px; font-weight: 400;
+  letter-spacing: -0.4px; line-height: 21px;
+  border-radius: 18px; position: relative;
+  word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;
+}
+.bubble.blue {
+  background: #0088ff; color: #f2f2f7;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+.bubble.gray { background: #e9e9eb; color: #333; }
+.iphone-screen.dark .bubble.blue { background: #0a84ff; color: #f2f2f7; }
+.iphone-screen.dark .bubble.gray { background: #3a3a3c; color: #fff; }
+
+/* Tail - Me (right) */
+.msg-row.me .bubble.tail { border-bottom-right-radius: 4px; margin-right: 6px; }
+.msg-row.me .bubble.tail::before {
+  content: ''; position: absolute; bottom: -1px; right: -6px;
+  width: 12px; height: 16px; background: #0088ff;
+  border-bottom-left-radius: 12px 10px;
+}
+.msg-row.me .bubble.tail::after {
+  content: ''; position: absolute; bottom: -1px; right: -12px;
+  width: 12px; height: 16px; background: #fff;
+  border-bottom-left-radius: 10px 8px;
+}
+.iphone-screen.dark .msg-row.me .bubble.tail::before { background: #0a84ff; }
+.iphone-screen.dark .msg-row.me .bubble.tail::after { background: #000; }
+
+/* Tail - Them (left) */
+.msg-row.them .bubble.tail { border-bottom-left-radius: 4px; margin-left: 6px; }
+.msg-row.them .bubble.tail::before {
+  content: ''; position: absolute; bottom: -1px; left: -6px;
+  width: 12px; height: 16px; background: #e9e9eb;
+  border-bottom-right-radius: 12px 10px;
+}
+.msg-row.them .bubble.tail::after {
+  content: ''; position: absolute; bottom: -1px; left: -12px;
+  width: 12px; height: 16px; background: #fff;
+  border-bottom-right-radius: 10px 8px;
+}
+.iphone-screen.dark .msg-row.them .bubble.tail::before { background: #3a3a3c; }
+.iphone-screen.dark .msg-row.them .bubble.tail::after { background: #000; }
+
+/* Emoji only */
+.bubble.emoji-only {
+  background: none !important; font-size: 42px;
+  line-height: 1.15; padding: 2px 4px;
+}
+.bubble.emoji-only::before, .bubble.emoji-only::after { display: none; }
+
+/* Time separator */
+.time-sep {
+  text-align: center; padding: 10px 0;
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12px; font-weight: 400; color: #8e8e93;
+}
+
+/* Delivery status */
+.delivery-status {
+  text-align: right; padding: 2px 16px 0;
+  font-size: 12px; font-weight: 400; color: #8e8e93;
+}
+
+/* Spam warning */
+.spam-section {
+  text-align: center; padding: 20px 28px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.spam-text {
+  font-size: 11.5px; color: #8e8e93; line-height: 1.45;
+}
+.spam-report-btn {
+  display: inline-block; font-size: 14px; color: #007aff; font-weight: 400;
+  padding: 5px 16px; cursor: default; font-family: inherit;
+  border: 1px solid rgba(0,122,255,0.35); border-radius: 18px;
+  background: none;
+}
+
+/* ============================================
+   INPUT BAR  (iOS 26 Liquid Glass)
+   ============================================ */
+.input-bar {
+  padding: 4px 10px 32px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  background: transparent;
+}
+
+/* + button - white glass circle */
+.input-plus-btn {
+  width: 44px; height: 44px; min-width: 44px; border-radius: 50%;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+}
+
+/* Text input - separate glass pill */
+.input-pill {
+  flex: 1; display: flex; align-items: center;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.995) 0%,
+      rgba(249,250,253,0.97) 100%);
+  border: 1px solid rgba(255,255,255,0.97);
+  box-shadow:
+    0 10px 28px rgba(17, 24, 39, 0.06),
+    0 2px 8px rgba(17, 24, 39, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.99),
+    inset 0 -1px 0 rgba(227,232,241,0.72);
+  border-radius: 24px;
+  padding: 0 12px 0 16px; min-height: 44px;
+  overflow: hidden;
+}
+.iphone-screen.dark .input-pill {
+  background:
+    linear-gradient(180deg,
+      rgba(78,82,92,0.96) 0%,
+      rgba(54,58,67,0.94) 100%);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.3),
+    0 2px 8px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    inset 0 -1px 0 rgba(0,0,0,0.28);
+}
+
+.input-field-shell {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+}
+
+.input-field {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: none; background: transparent;
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px; font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  color: transparent;
+  caret-color: #1d1d1f;
+  padding: 0;
+  outline: none;
+}
+.iphone-screen.dark .input-field { caret-color: #fff; }
+
+.input-field-text {
+  position: absolute; inset: 0;
+  display: flex; align-items: center;
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px; font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  color: #1d1d1f;
+  pointer-events: none;
+}
+.input-field-text.placeholder { color: #b7bac3; }
+.iphone-screen.dark .input-field-text { color: #fff; }
+.iphone-screen.dark .input-field-text.placeholder { color: #8b9099; }
+
+.input-right-icon {
+  flex-shrink: 0; display: flex; align-items: center;
+  justify-content: flex-end;
+  width: 32px; margin-left: 8px;
+}
+.input-send-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #0088ff; display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.iphone-screen.dark .input-send-btn { background: #0a84ff; }
+
+/* Home indicator */
+.home-indicator {
+  position: absolute; bottom: 8px; left: 50%;
+  transform: translateX(-50%); width: 134px; height: 5px;
+  background: #000; border-radius: 3px; z-index: 60; opacity: 0.2;
+}
+.iphone-screen.dark .home-indicator { background: #fff; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 800px) {
+  .app { flex-direction: column; }
+  .editor {
+    width: 100%; min-width: 100%; height: 50vh;
+    border-right: none; border-bottom: 1px solid #e5e5ea;
+  }
+  .preview { height: 50vh; }
+}
